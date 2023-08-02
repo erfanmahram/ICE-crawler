@@ -29,7 +29,6 @@ def get_daily_archive():
                   'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                   'Cookie': 'cookiesession1=678B2995C880D8E4A59041B1DEA0AD9F', 'Host': 'ice.ir',
                   'Origin': 'https://ice.ir',
-                  'Referer': 'https://ice.ir/Home/PriceArchive/1000000300?name=%D8%AF%D9%84%D8%A7%D8%B1-%D8%A7%D8%B3%DA%A9%D9%86%D8%A7%D8%B3',
                   'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin',
                   'TE': 'trailers',
                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
@@ -43,9 +42,11 @@ def get_daily_archive():
         url_data = dict()
         for item in response.json():
             if item['persianCreateDate'] in url_data.keys():
-                url_data[item['persianCreateDate']] += f", {str(item['price'])}"
+                url_data[item['persianCreateDate']] += f" {str(item['price'])}"
             else:
                 url_data[item['persianCreateDate']] = str(item['price'])
+        for k, val in url_data.items():
+            url_data[k] = val.split() if len(val.split()) > 1 else val
         archive_data[url] = url_data
     return archive_data
 
@@ -57,4 +58,4 @@ while True:
     else:
         time.sleep(30)
     if jdatetime.datetime.now().hour == 8:
-        get_daily_archive()
+        print(get_daily_archive())
